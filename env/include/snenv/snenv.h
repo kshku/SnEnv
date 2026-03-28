@@ -87,6 +87,8 @@ SN_API const char *sn_env_get_exe_path(void);
  * @note Returns NULL if failed to get the string.
  *
  * @note Returned value is only valid till next call.
+ *
+ * @note NOT thread-safe.
  */
 SN_API const char *sn_env_get_cwd(void);
 

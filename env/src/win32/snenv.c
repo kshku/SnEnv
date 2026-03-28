@@ -6,7 +6,7 @@
 #include <tlhelp32.h>
 
 const char *sn_env_var_get(const char *name) {
-    static char buffer[32767];
+    static char buffer[32767] = {0};
     DWORD size = GetEnvironmentVariableA(name, buffer, SN_ARRAY_LENGTH(buffer));
     if (size == 0) {
         SN_ASSERT(GetLastError() == ERROR_ENVVAR_NOT_FOUND);
@@ -28,13 +28,25 @@ bool sn_env_var_unset(const char *name) {
 
 bool sn_env_var_read(snEnvVarEntry *entry) {
     // We have no way of calling FreeEnvironmentStrings()!
-    static LPTCH env = GetEnvironmentStrings();
-    static LPTSTR var = (LPTSTR)env;
+    static bool first_env = true;
+
+    static LPTCH env = NULL;
+    static LPTSTR var = NULL;
+
+    if (first_env) {
+        first_env = false;
+        env = GetEnvironmentStrings();
+        var = (LPTSTR)env;
+    }
+
     SN_ASSERT(env);
     *entry = (snEnvVarEntry){0};
 
     if (!*var) {
-        var = (LPTSTR)env;
+        FreeEnvironmentStrings(env);
+        first_env = true;
+        env = NULL;
+        var = NULL;
         return false;
     }
 
@@ -55,7 +67,7 @@ bool sn_env_var_read(snEnvVarEntry *entry) {
 
     var += i + 1;
 
-    return ture;
+    return true;
 }
 
 uint64_t sn_env_get_process_id(void) {
@@ -63,13 +75,12 @@ uint64_t sn_env_get_process_id(void) {
 }
 
 uint64_t sn_env_get_process_parent_id(void) {
-    uint64_t pid;
     DWORD current_pid = GetCurrentProcessId();
     PROCESSENTRY32 pe = {0};
 
     // Take a snapshot of all Windows processes
     HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    SN_ASSERT(h);
+    SN_ASSERT(h != INVALID_HANDLE_VALUE);
 
     pe.dwSize = sizeof(PROCESSENTRY32);
 
@@ -88,6 +99,7 @@ uint64_t sn_env_get_process_parent_id(void) {
 
 const char *sn_env_get_exe_path(void) {
     static char buffer[MAX_PATH] = {0};
+    // Should not cache exe path?
     if (buffer[0]) return (const char *)buffer;
 
     DWORD result = GetModuleFileNameA(NULL, buffer, SN_ARRAY_LENGTH(buffer));
@@ -101,8 +113,8 @@ const char *sn_env_get_exe_path(void) {
 
 const char *sn_env_get_cwd(void) {
     static char buffer[MAX_PATH] = {0};
-    DWORD size = GetCurrentDirectory(SN_ARRAY_LENGTH(buffer), buffer);
-    if (result == 0 || result > SN_ARRAY_LENGTH(buffer)) return NULL;
+    DWORD size = GetCurrentDirectoryA(SN_ARRAY_LENGTH(buffer), buffer);
+    if (size == 0 || size > SN_ARRAY_LENGTH(buffer)) return NULL;
     return (const char *)buffer;
 }
 

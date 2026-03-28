@@ -12,6 +12,10 @@
 #include <mach-o/dyld.h>
 #endif
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 const char *sn_env_var_get(const char *name) {
     // Use secure_getenv()?
     return (const char *)getenv(name);
@@ -46,16 +50,17 @@ bool sn_env_var_read(snEnvVarEntry *entry) {
     size_t i = 0;
     static char buffer[40000] = {0};
     entry->name = &buffer[0];
-    for (i = 0; i < SN_ARRAY_LENGTH(buffer) && *env[i]; ++i) {
-        if (*env[i] == '=') {
+    const char *var = *env;
+    for (i = 0; i < SN_ARRAY_LENGTH(buffer) && var[i]; ++i) {
+        if (var[i] == '=') {
             buffer[i] = 0;
             entry->value = &buffer[i + 1];
         } else {
-            buffer[i] = *env[i];
+            buffer[i] = var[i];
         }
     }
     // If assertion fails, buffer size is not enough
-    SN_ASSERT(*env[i] == 0);
+    SN_ASSERT(var[i] == 0);
     buffer[i] = 0;
 
     ++env;
@@ -73,7 +78,9 @@ uint64_t sn_env_get_process_parent_id(void) {
 
 const char *sn_env_get_exe_path(void) {
     static char buffer[PATH_MAX] = {0};
+    // Should not cache exe path?
     if (buffer[0]) return (const char *)buffer;
+
 #if defined(SN_OS_LINUX)
     ssize_t count = readlink("/proc/self/exe", buffer, SN_ARRAY_LENGTH(buffer) - 1);
     if (count < 0) {
@@ -94,7 +101,7 @@ const char *sn_env_get_exe_path(void) {
 }
 
 const char *sn_env_get_cwd(void) {
-    static char buffer[PATH_MAX];
+    static char buffer[PATH_MAX] = {0};
     return getcwd(buffer, SN_ARRAY_LENGTH(buffer));
 }
 
