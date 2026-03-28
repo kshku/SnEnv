@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15...3.31)
 
-project(SnEnv VERSION 0.0.0 DESCRIPTION "A env for Sn* projects" LANGUAGES C)
+project(SnEnv VERSION 0.0.0 DESCRIPTION "Env related things in Sn* projects" LANGUAGES C)
 
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD_REQUIRED ON)

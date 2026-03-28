@@ -3,7 +3,9 @@ set(SRCS
 )
 
 add_executable(sn_env_test)
+
 target_sources(sn_env_test PRIVATE ${SRCS})
+
 target_link_libraries(sn_env_test PRIVATE snenv)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND SN_ENV_BUILD_SHARED)
