@@ -16,9 +16,23 @@
 #define PATH_MAX 4096
 #endif
 
-const char *sn_env_var_get(const char *name) {
+uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
     // Use secure_getenv()?
-    return (const char *)getenv(name);
+    const char *res = (const char *)getenv(name);
+    if (!res) return 0;
+
+    uint64_t i = 0;
+    if (!value || !size) {
+        for (i = 0; res[i]; ++i);
+        return i + 1;
+    }
+
+    for (i = 0; i < size && res[i]; ++i) value[i] = res[i];
+
+    if (i == size) value[i - 1] = 0;
+    else value[i] = 0;
+
+    return i;
 }
 
 bool sn_env_var_set(const char *name, const char *value, bool overwrite) {
@@ -76,33 +90,54 @@ uint64_t sn_env_get_process_parent_id(void) {
     return (uint64_t)getppid();
 }
 
-const char *sn_env_get_exe_path(void) {
-    static char buffer[PATH_MAX] = {0};
-    // Should not cache exe path?
-    if (buffer[0]) return (const char *)buffer;
+uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
+    char buffer[PATH_MAX] = {0};
 
 #if defined(SN_OS_LINUX)
     ssize_t count = readlink("/proc/self/exe", buffer, SN_ARRAY_LENGTH(buffer) - 1);
-    if (count < 0) {
-        buffer[0] = 0;
-        return NULL;
-    }
+    if (count < 0) return 0;
+
     buffer[count] = 0;
 #else
     char raw_path[PATH_MAX] = {0};
     uint32_t raw_path_size = SN_ARRAY_LENGTH(raw_path);
-    if (_NSGetExecutablePath(raw_path, &raw_path_size) != 0) return NULL;
-    if (realpath(raw_path, buffer) == NULL) {
-        buffer[0] = 0;
-        return NULL;
-    }
+    if (_NSGetExecutablePath(raw_path, &raw_path_size) != 0) return 0;
+    if (realpath(raw_path, buffer) == NULL) return 0;
 #endif
-    return buffer;
+
+
+    uint64_t i = 0;
+    if (!path || !size) {
+        for (i = 0; buffer[i]; ++i);
+        return i + 1; // include one byte for NULL
+    }
+
+    for (i = 0; i < size && buffer[i]; ++i) path[i] = buffer[i];
+
+    if (i == size) path[i - 1] = 0;
+    else path[i] = 0;
+
+    return i;
 }
 
-const char *sn_env_get_cwd(void) {
-    static char buffer[PATH_MAX] = {0};
-    return getcwd(buffer, SN_ARRAY_LENGTH(buffer));
+uint64_t sn_env_get_cwd(char *cwd, uint64_t size) {
+    char buffer[PATH_MAX] = {0};
+    char *res = getcwd(buffer, SN_ARRAY_LENGTH(buffer));
+
+    if (!res) return 0;
+
+    uint64_t i = 0;
+    if (!cwd || !size) {
+        for (i = 0; res[i]; ++i);
+        return i + 1; // include one byte for NULL
+    }
+
+    for (i = 0; i < size && res[i]; ++i) cwd[i] = res[i];
+
+    if (i == size) cwd[i - 1] = 0;
+    else cwd[i] = 0;
+
+    return i;
 }
 
 #endif

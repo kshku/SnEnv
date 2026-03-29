@@ -16,12 +16,14 @@ typedef struct snEnvVarEntry {
  * @brief Get the value of an environment variable.
  *
  * @param name The name of environment variable.
+ * @param value Buffer to store the value
+ * @param size The size of the buffer
  *
- * @return Returns pointer to value (owned by system) or NULL if not found.
+ * @return Returns number of bytes written (0 if not found).
  *
- * @note Returned value should not be freed, and is only valid till next call.
+ * @note If value or size is NULL, returns number of bytes required.
  */
-SN_API const char *sn_env_var_get(const char *name);
+SN_API uint64_t sn_env_var_get(const char *name, char *value, uint64_t size);
 
 /**
  * @brief Set environment variable.
@@ -51,6 +53,8 @@ SN_API bool sn_env_var_unset(const char *name);
  * @return Returns true if more entries are there, false if iteration completed.
  *
  * @note Contents of entry are valid only upto next call to sn_env_var_read.
+ *
+ * @note Not thread safe, and iteration state is global.
  */
 SN_API bool sn_env_var_read(snEnvVarEntry *entry);
 
@@ -71,25 +75,25 @@ SN_API uint64_t sn_env_get_process_parent_id(void);
 /**
  * @brief Get absolute executable path.
  *
- * @return Returns pointer to executable path string.
+ * @param path Buffer to store path
+ * @param size Size of the buffer
  *
- * @note Returns NULL if failed to get the string.
+ * @return Returns number of bytes written.
  *
- * @note Returned value is only valid till next call.
+ * @note If path is NULL or size is 0, returns required size.
  */
-SN_API const char *sn_env_get_exe_path(void);
+SN_API uint64_t sn_env_get_exe_path(char *path, uint64_t size);
 
 /**
  * @brief Get current working directory.
  *
- * @return Returns pointer to cwd string.
+ * @param cwd Buffer to store cwd
+ * @param size Size of the buffer
  *
- * @note Returns NULL if failed to get the string.
+ * @return Returns number of bytes written.
  *
- * @note Returned value is only valid till next call.
- *
- * @note NOT thread-safe.
+ * @note If cwd is NULL or size is 0, returns required size.
  */
-SN_API const char *sn_env_get_cwd(void);
+SN_API uint64_t sn_env_get_cwd(char *cwd, uint64_t size);
 
 // TODO: Arg processing

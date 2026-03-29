@@ -5,19 +5,30 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
-const char *sn_env_var_get(const char *name) {
-    static char buffer[32767] = {0};
-    DWORD size = GetEnvironmentVariableA(name, buffer, SN_ARRAY_LENGTH(buffer));
-    if (size == 0) {
+uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
+    char buffer[40000] = {0};
+    DWORD len = GetEnvironmentVariableA(name, buffer, SN_ARRAY_LENGTH(buffer));
+    if (len == 0) {
         SN_ASSERT(GetLastError() == ERROR_ENVVAR_NOT_FOUND);
-        return NULL;
+        return 0;
     }
 
-    return (const char *)buffer;
+    uint64_t i = 0;
+    if (!value || !size) {
+        for (i = 0; buffer[i]; ++i);
+        return i + 1;
+    }
+
+    for (i = 0; i < size && buffer[i]; ++i) value[i] = buffer[i];
+
+    if (i == size) value[i - 1] = 0;
+    else value[i] = 0;
+
+    return i;
 }
 
 bool sn_env_var_set(const char *name, const char *value, bool overwrite) {
-    if (overwrite || sn_env_var_get(name) == NULL) return SetEnvironmentVariableA(name, value);
+    if (overwrite || sn_env_var_get(name, NULL, 0) == 0) return SetEnvironmentVariableA(name, value);
     // Var exists and value is not changed.
     return true;
 }
@@ -97,25 +108,45 @@ uint64_t sn_env_get_process_parent_id(void) {
     SN_SHOULD_NOT_REACH_HERE;
 }
 
-const char *sn_env_get_exe_path(void) {
-    static char buffer[MAX_PATH] = {0};
-    // Should not cache exe path?
-    if (buffer[0]) return (const char *)buffer;
+uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
+    char buffer[MAX_PATH] = {0};
 
     DWORD result = GetModuleFileNameA(NULL, buffer, SN_ARRAY_LENGTH(buffer));
-    if (result == 0 || result == SN_ARRAY_LENGTH(buffer)) {
-        buffer[0] = 0;
-        return NULL;
+    if (result == 0 || result == SN_ARRAY_LENGTH(buffer)) return 0;
+
+    uint64_t i = 0;
+    if (!path || !size) {
+        for (i = 0; buffer[i]; ++i);
+        return i + 1; // include one byte for NULL
     }
 
-    return (const char *)buffer;
+    for (i = 0; i < size && buffer[i]; ++i) path[i] = buffer[i];
+
+    if (i == size) path[i - 1] = 0;
+    else path[i] = 0;
+
+    return i;
 }
 
-const char *sn_env_get_cwd(void) {
-    static char buffer[MAX_PATH] = {0};
-    DWORD size = GetCurrentDirectoryA(SN_ARRAY_LENGTH(buffer), buffer);
-    if (size == 0 || size > SN_ARRAY_LENGTH(buffer)) return NULL;
-    return (const char *)buffer;
+uint64_t sn_env_get_cwd(char *cwd, uint64_t size) {
+    char buffer[MAX_PATH] = {0};
+
+    DWORD len = GetCurrentDirectoryA(SN_ARRAY_LENGTH(buffer), buffer);
+    if (len == 0 || len > SN_ARRAY_LENGTH(buffer)) return 0;
+
+    uint64_t i = 0;
+
+    if (!cwd || !size) {
+        for (i = 0; buffer[i]; ++i);
+        return i + 1; // include one byte for NULL
+    }
+
+    for (i = 0; i < size && buffer[i]; ++i) cwd[i] = buffer[i];
+
+    if (i == size) cwd[i - 1] = 0;
+    else cwd[i] = 0;
+
+    return i;
 }
 
 #endif
