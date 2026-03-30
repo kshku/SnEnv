@@ -95,5 +95,3 @@ SN_API uint64_t sn_env_get_exe_path(char *path, uint64_t size);
  * @note If cwd is NULL or size is 0, returns required size.
  */
 SN_API uint64_t sn_env_get_cwd(char *cwd, uint64_t size);
-
-// TODO: Arg processing
