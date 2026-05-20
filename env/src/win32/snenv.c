@@ -2,8 +2,8 @@
 
 #if defined(SN_OS_WINDOWS)
 
-#include <windows.h>
-#include <tlhelp32.h>
+    #include <tlhelp32.h>
+    #include <windows.h>
 
 uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
     char buffer[40000] = {0};
@@ -28,7 +28,8 @@ uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
 }
 
 bool sn_env_var_set(const char *name, const char *value, bool overwrite) {
-    if (overwrite || sn_env_var_get(name, NULL, 0) == 0) return SetEnvironmentVariableA(name, value);
+    if (overwrite || sn_env_var_get(name, NULL, 0) == 0)
+        return SetEnvironmentVariableA(name, value);
     // Var exists and value is not changed.
     return true;
 }
@@ -102,7 +103,7 @@ uint64_t sn_env_get_process_parent_id(void) {
                 CloseHandle(h);
                 return (uint64_t)pe.th32ParentProcessID;
             }
-        } while(Process32Next(h, &pe));
+        } while (Process32Next(h, &pe));
     }
 
     SN_SHOULD_NOT_REACH_HERE;
@@ -117,7 +118,7 @@ uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
     uint64_t i = 0;
     if (!path || !size) {
         for (i = 0; buffer[i]; ++i);
-        return i + 1; // include one byte for NULL
+        return i + 1;  // include one byte for NULL
     }
 
     for (i = 0; i < size && buffer[i]; ++i) path[i] = buffer[i];
@@ -138,7 +139,7 @@ uint64_t sn_env_get_cwd(char *cwd, uint64_t size) {
 
     if (!cwd || !size) {
         for (i = 0; buffer[i]; ++i);
-        return i + 1; // include one byte for NULL
+        return i + 1;  // include one byte for NULL
     }
 
     for (i = 0; i < size && buffer[i]; ++i) cwd[i] = buffer[i];

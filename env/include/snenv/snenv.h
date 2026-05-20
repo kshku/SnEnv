@@ -1,7 +1,7 @@
 #pragma once
 
-#include "snenv/defines.h"
 #include "snenv/api.h"
+#include "snenv/defines.h"
 
 /**
  * @struct snEnvVarEntry
@@ -40,7 +40,7 @@ SN_API bool sn_env_var_set(const char *name, const char *value, bool overwrite);
  * @brief Unset environment variable.
  *
  * @param name Variable name.
- * 
+ *
  * @return Returns true on success.
  */
 SN_API bool sn_env_var_unset(const char *name);
@@ -48,7 +48,8 @@ SN_API bool sn_env_var_unset(const char *name);
 /**
  * @brief Iterate through environment variables.
  *
- * Once all the entries are iterated (after returning false), from next call onwards, starts from beginning.
+ * Once all the entries are iterated (after returning false), from next call onwards, starts from
+ * beginning.
  *
  * @return Returns true if more entries are there, false if iteration completed.
  *

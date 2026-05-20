@@ -3,18 +3,18 @@
 
 #if defined(SN_OS_LINUX) || defined(SN_OS_MAC)
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <limits.h>
+    #include <limits.h>
+    #include <stdlib.h>
+    #include <sys/types.h>
+    #include <unistd.h>
 
-#if defined(SN_OS_MAC)
-#include <mach-o/dyld.h>
-#endif
+    #if defined(SN_OS_MAC)
+        #include <mach-o/dyld.h>
+    #endif
 
-#ifndef PATH_MAX
-#define PATH_MAX 4096
-#endif
+    #ifndef PATH_MAX
+        #define PATH_MAX 4096
+    #endif
 
 uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
     // Use secure_getenv()?
@@ -93,23 +93,22 @@ uint64_t sn_env_get_process_parent_id(void) {
 uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
     char buffer[PATH_MAX] = {0};
 
-#if defined(SN_OS_LINUX)
+    #if defined(SN_OS_LINUX)
     ssize_t count = readlink("/proc/self/exe", buffer, SN_ARRAY_LENGTH(buffer) - 1);
     if (count < 0) return 0;
 
     buffer[count] = 0;
-#else
+    #else
     char raw_path[PATH_MAX] = {0};
     uint32_t raw_path_size = SN_ARRAY_LENGTH(raw_path);
     if (_NSGetExecutablePath(raw_path, &raw_path_size) != 0) return 0;
     if (realpath(raw_path, buffer) == NULL) return 0;
-#endif
-
+    #endif
 
     uint64_t i = 0;
     if (!path || !size) {
         for (i = 0; buffer[i]; ++i);
-        return i + 1; // include one byte for NULL
+        return i + 1;  // include one byte for NULL
     }
 
     for (i = 0; i < size && buffer[i]; ++i) path[i] = buffer[i];
@@ -129,7 +128,7 @@ uint64_t sn_env_get_cwd(char *cwd, uint64_t size) {
     uint64_t i = 0;
     if (!cwd || !size) {
         for (i = 0; res[i]; ++i);
-        return i + 1; // include one byte for NULL
+        return i + 1;  // include one byte for NULL
     }
 
     for (i = 0; i < size && res[i]; ++i) cwd[i] = res[i];
