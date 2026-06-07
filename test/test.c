@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TEST_ASSERT(x) do { if (!(x)) { fprintf(stderr, "FAIL [%s:%d]: %s\n", __FILE__, __LINE__, #x); abort(); } } while(0)
+
 #define TEST_VAR_NAME "SNENV_TEST_VAR"
 #define TEST_VAR_VALUE "hello_world"
 
@@ -31,35 +33,35 @@ static void test_env_get_set_unset(void) {
 
     char *value = NULL;
 
-    SN_ASSERT(env_get_alloc(TEST_VAR_NAME, &value) == 0);
-    SN_ASSERT(value == NULL);
+    TEST_ASSERT(env_get_alloc(TEST_VAR_NAME, &value) == 0);
+    TEST_ASSERT(value == NULL);
 
-    SN_ASSERT(sn_env_var_set(TEST_VAR_NAME, TEST_VAR_VALUE, true));
+    TEST_ASSERT(sn_env_var_set(TEST_VAR_NAME, TEST_VAR_VALUE, true));
 
     env_get_alloc(TEST_VAR_NAME, &value);
 
-    SN_ASSERT(value);
-    SN_ASSERT(strcmp(value, TEST_VAR_VALUE) == 0);
+    TEST_ASSERT(value);
+    TEST_ASSERT(strcmp(value, TEST_VAR_VALUE) == 0);
 
-    SN_ASSERT(sn_env_var_set(TEST_VAR_NAME, "different", false));
+    TEST_ASSERT(sn_env_var_set(TEST_VAR_NAME, "different", false));
 
     free(value);
     env_get_alloc(TEST_VAR_NAME, &value);
 
-    SN_ASSERT(strcmp(value, TEST_VAR_VALUE) == 0);
+    TEST_ASSERT(strcmp(value, TEST_VAR_VALUE) == 0);
 
-    SN_ASSERT(sn_env_var_set(TEST_VAR_NAME, "different", true));
+    TEST_ASSERT(sn_env_var_set(TEST_VAR_NAME, "different", true));
 
     free(value);
     env_get_alloc(TEST_VAR_NAME, &value);
 
-    SN_ASSERT(strcmp(value, "different") == 0);
+    TEST_ASSERT(strcmp(value, "different") == 0);
 
-    SN_ASSERT(sn_env_var_unset(TEST_VAR_NAME));
+    TEST_ASSERT(sn_env_var_unset(TEST_VAR_NAME));
 
     free(value);
 
-    SN_ASSERT(env_get_alloc(TEST_VAR_NAME, &value) == 0);
+    TEST_ASSERT(env_get_alloc(TEST_VAR_NAME, &value) == 0);
 
     printf("ok\n");
 }
@@ -67,7 +69,7 @@ static void test_env_get_set_unset(void) {
 static void test_env_iteration(void) {
     printf("test_env_iteration...\n");
 
-    SN_ASSERT(sn_env_var_set(TEST_VAR_NAME, TEST_VAR_VALUE, true));
+    TEST_ASSERT(sn_env_var_set(TEST_VAR_NAME, TEST_VAR_VALUE, true));
 
     snEnvVarEntry entry;
 
@@ -75,21 +77,21 @@ static void test_env_iteration(void) {
     int found_test_var = 0;
 
     while (sn_env_var_read(&entry)) {
-        SN_ASSERT(entry.name);
-        SN_ASSERT(entry.value);
+        TEST_ASSERT(entry.name);
+        TEST_ASSERT(entry.value);
 
-        SN_ASSERT(strchr(entry.name, '=') == NULL);
+        TEST_ASSERT(strchr(entry.name, '=') == NULL);
 
         if (strcmp(entry.name, TEST_VAR_NAME) == 0) {
             found_test_var = 1;
-            SN_ASSERT(strcmp(entry.value, TEST_VAR_VALUE) == 0);
+            TEST_ASSERT(strcmp(entry.value, TEST_VAR_VALUE) == 0);
         }
 
         count++;
     }
 
-    SN_ASSERT(count > 0);
-    SN_ASSERT(found_test_var);
+    TEST_ASSERT(count > 0);
+    TEST_ASSERT(found_test_var);
 
     printf("entries: %d\n", count);
 }
@@ -106,10 +108,10 @@ static void test_env_iteration_reset(void) {
 
     while (sn_env_var_read(&entry)) second++;
 
-    SN_ASSERT(first > 0);
-    SN_ASSERT(second > 0);
+    TEST_ASSERT(first > 0);
+    TEST_ASSERT(second > 0);
 
-    SN_ASSERT(first == second);
+    TEST_ASSERT(first == second);
 
     printf("count: %d\n", first);
 }
@@ -123,14 +125,14 @@ static void test_large_env_value(void) {
 
     large[LARGE_VAR_SIZE - 1] = 0;
 
-    SN_ASSERT(sn_env_var_set(LARGE_VAR_NAME, large, true));
+    TEST_ASSERT(sn_env_var_set(LARGE_VAR_NAME, large, true));
 
     char *value;
 
     env_get_alloc(LARGE_VAR_NAME, &value);
 
-    SN_ASSERT(value);
-    SN_ASSERT(strcmp(value, large) == 0);
+    TEST_ASSERT(value);
+    TEST_ASSERT(strcmp(value, large) == 0);
 
     free(value);
 }
@@ -143,7 +145,7 @@ static void test_process_ids(void) {
 
     printf("pid=%llu ppid=%llu\n", (unsigned long long)pid, (unsigned long long)ppid);
 
-    SN_ASSERT(pid > 0);
+    TEST_ASSERT(pid > 0);
 }
 
 static void test_exe_path(void) {
@@ -151,14 +153,14 @@ static void test_exe_path(void) {
 
     uint64_t needed = sn_env_get_exe_path(NULL, 0);
 
-    SN_ASSERT(needed > 0);
+    TEST_ASSERT(needed > 0);
 
     char *buf = malloc(needed);
 
     uint64_t written = sn_env_get_exe_path(buf, needed);
 
-    SN_ASSERT(written > 0);
-    SN_ASSERT(buf[0]);
+    TEST_ASSERT(written > 0);
+    TEST_ASSERT(buf[0]);
 
     printf("exe=%s\n", buf);
 
@@ -170,13 +172,13 @@ static void test_cwd(void) {
 
     uint64_t needed = sn_env_get_cwd(NULL, 0);
 
-    SN_ASSERT(needed > 0);
+    TEST_ASSERT(needed > 0);
 
     char *buf = malloc(needed);
 
     uint64_t written = sn_env_get_cwd(buf, needed);
 
-    SN_ASSERT(written > 0);
+    TEST_ASSERT(written > 0);
 
     printf("cwd=%s\n", buf);
 
