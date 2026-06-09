@@ -71,7 +71,7 @@ static void test_env_iteration(void) {
 
     TEST_ASSERT(sn_env_var_set(TEST_VAR_NAME, TEST_VAR_VALUE, true));
 
-    snEnvVarEntry entry;
+    SnEnvVarEntry entry;
 
     int count = 0;
     int found_test_var = 0;
@@ -99,7 +99,7 @@ static void test_env_iteration(void) {
 static void test_env_iteration_reset(void) {
     printf("test_env_iteration_reset...\n");
 
-    snEnvVarEntry entry;
+    SnEnvVarEntry entry;
 
     int first = 0;
     int second = 0;

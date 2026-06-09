@@ -43,7 +43,7 @@ bool sn_env_var_unset(const char *name) {
     return unsetenv(name) == 0;
 }
 
-bool sn_env_var_read(snEnvVarEntry *entry) {
+bool sn_env_var_read(SnEnvVarEntry *entry) {
     extern char **environ;
 
     static bool first = true;
@@ -54,7 +54,7 @@ bool sn_env_var_read(snEnvVarEntry *entry) {
         env = environ;
     }
 
-    *entry = (snEnvVarEntry){0};
+    *entry = (SnEnvVarEntry){0};
 
     if (!(*env)) {
         env = environ;

@@ -4,13 +4,13 @@
 #include "snenv/defines.h"
 
 /**
- * @struct snEnvVarEntry
+ * @struct SnEnvVarEntry
  * @brief A struct representing environment variable and value pair.
  */
-typedef struct snEnvVarEntry {
+typedef struct SnEnvVarEntry {
     const char *name; /**< Name of variable */
     const char *value; /**< Value of variable */
-} snEnvVarEntry;
+} SnEnvVarEntry;
 
 /**
  * @brief Get the value of an environment variable.
@@ -57,7 +57,7 @@ SN_API bool sn_env_var_unset(const char *name);
  *
  * @note Not thread safe, and iteration state is global.
  */
-SN_API bool sn_env_var_read(snEnvVarEntry *entry);
+SN_API bool sn_env_var_read(SnEnvVarEntry *entry);
 
 /**
  * @brief Get the process id.

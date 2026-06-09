@@ -38,7 +38,7 @@ bool sn_env_var_unset(const char *name) {
     return SetEnvironmentVariableA(name, NULL);
 }
 
-bool sn_env_var_read(snEnvVarEntry *entry) {
+bool sn_env_var_read(SnEnvVarEntry *entry) {
     // We have no way of calling FreeEnvironmentStrings()!
     static bool first_env = true;
 
@@ -52,7 +52,7 @@ bool sn_env_var_read(snEnvVarEntry *entry) {
     }
 
     SN_ASSERT(env);
-    *entry = (snEnvVarEntry){0};
+    *entry = (SnEnvVarEntry){0};
 
     if (!*var) {
         FreeEnvironmentStrings(env);
