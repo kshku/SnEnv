@@ -1,7 +1,7 @@
 #pragma once
 
 #include "snenv/api.h"
-#include "snenv/defines.h"
+#include <sncore/defines.h>
 
 /**
  * @struct SnEnvVarEntry
