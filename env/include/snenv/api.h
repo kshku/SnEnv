@@ -1,23 +1,11 @@
-#include "snenv/platform.h"
+#pragma once
+
+#include <sncore/api_common.h>
 
 #if defined(SN_ENV_STATIC)
-    #define SN_API
+    #define SN_ENV_API
+#elif defined(SN_EXPORT)
+    #define SN_ENV_API SN_API_HELPER_EXPORT
 #else
-    #ifdef SN_EXPORT
-        #if defined(SN_OS_LINUX) || defined(SN_OS_MAC)
-            #define SN_API __attribute__((visibility("default")))
-        #elif defined(SN_OS_WINDOWS)
-            #define SN_API __declspec(dllexport)
-        #else
-            #error "Should not reach here!"
-        #endif
-    #else
-        #if defined(SN_OS_LINUX) || defined(SN_OS_MAC)
-            #define SN_API
-        #elif defined(SN_OS_WINDOWS)
-            #define SN_API __declspec(dllimport)
-        #else
-            #error "Should not reach here!"
-        #endif
-    #endif
+    #define SN_ENV_API SN_API_HELPER_IMPORT
 #endif
