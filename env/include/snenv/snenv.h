@@ -23,7 +23,7 @@ typedef struct SnEnvVarEntry {
  *
  * @note If value or size is NULL, returns number of bytes required.
  */
-SN_API uint64_t sn_env_var_get(const char *name, char *value, uint64_t size);
+SN_ENV_API uint64_t sn_env_var_get(const char *name, char *value, uint64_t size);
 
 /**
  * @brief Set environment variable.
@@ -34,7 +34,7 @@ SN_API uint64_t sn_env_var_get(const char *name, char *value, uint64_t size);
  *
  * @return Returns true on success.
  */
-SN_API bool sn_env_var_set(const char *name, const char *value, bool overwrite);
+SN_ENV_API bool sn_env_var_set(const char *name, const char *value, bool overwrite);
 
 /**
  * @brief Unset environment variable.
@@ -43,7 +43,7 @@ SN_API bool sn_env_var_set(const char *name, const char *value, bool overwrite);
  *
  * @return Returns true on success.
  */
-SN_API bool sn_env_var_unset(const char *name);
+SN_ENV_API bool sn_env_var_unset(const char *name);
 
 /**
  * @brief Iterate through environment variables.
@@ -57,21 +57,21 @@ SN_API bool sn_env_var_unset(const char *name);
  *
  * @note Not thread safe, and iteration state is global.
  */
-SN_API bool sn_env_var_read(SnEnvVarEntry *entry);
+SN_ENV_API bool sn_env_var_read(SnEnvVarEntry *entry);
 
 /**
  * @brief Get the process id.
  *
  * @return Returns process id.
  */
-SN_API uint64_t sn_env_get_process_id(void);
+SN_ENV_API uint64_t sn_env_get_process_id(void);
 
 /**
  * @brief Get the parent process id.
  *
  * @return Returns process id.
  */
-SN_API uint64_t sn_env_get_process_parent_id(void);
+SN_ENV_API uint64_t sn_env_get_process_parent_id(void);
 
 /**
  * @brief Get absolute executable path.
@@ -83,7 +83,7 @@ SN_API uint64_t sn_env_get_process_parent_id(void);
  *
  * @note If path is NULL or size is 0, returns required size.
  */
-SN_API uint64_t sn_env_get_exe_path(char *path, uint64_t size);
+SN_ENV_API uint64_t sn_env_get_exe_path(char *path, uint64_t size);
 
 /**
  * @brief Get current working directory.
@@ -95,4 +95,4 @@ SN_API uint64_t sn_env_get_exe_path(char *path, uint64_t size);
  *
  * @note If cwd is NULL or size is 0, returns required size.
  */
-SN_API uint64_t sn_env_get_cwd(char *cwd, uint64_t size);
+SN_ENV_API uint64_t sn_env_get_cwd(char *cwd, uint64_t size);
