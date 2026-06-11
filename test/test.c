@@ -3,7 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TEST_ASSERT(x) do { if (!(x)) { fprintf(stderr, "FAIL [%s:%d]: %s\n", __FILE__, __LINE__, #x); abort(); } } while(0)
+#define TEST_ASSERT(x)                                                     \
+    do {                                                                   \
+        if (!(x)) {                                                        \
+            fprintf(stderr, "FAIL [%s:%d]: %s\n", __FILE__, __LINE__, #x); \
+            abort();                                                       \
+        }                                                                  \
+    } while (0)
 
 #define TEST_VAR_NAME "SNENV_TEST_VAR"
 #define TEST_VAR_VALUE "hello_world"
