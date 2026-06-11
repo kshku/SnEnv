@@ -1,6 +1,7 @@
 #pragma once
 
 #include "snenv/api.h"
+
 #include <sncore/defines.h>
 
 /**

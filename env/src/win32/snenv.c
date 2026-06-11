@@ -2,9 +2,11 @@
 
 #if defined(SN_OS_WINDOWS)
 
-    #include <tlhelp32.h>
+// clang-format off
     #include <windows.h>
+    #include <tlhelp32.h>
     #include <sncore/utf.h>
+// clang-format on
 
 uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
     wchar_t wname[1024];
@@ -117,6 +119,7 @@ uint64_t sn_env_get_process_parent_id(void) {
     }
 
     SN_SHOULD_NOT_REACH_HERE;
+    return 0;
 }
 
 uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
