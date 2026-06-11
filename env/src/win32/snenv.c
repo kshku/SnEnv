@@ -119,6 +119,7 @@ uint64_t sn_env_get_process_parent_id(void) {
     }
 
     SN_SHOULD_NOT_REACH_HERE;
+    return 0;
 }
 
 uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
