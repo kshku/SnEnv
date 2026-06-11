@@ -67,7 +67,7 @@ int main(void) {
 include(FetchContent)
 FetchContent_Declare(snenv
     GIT_REPOSITORY https://github.com/kshku/SnEnv.git
-    GIT_TAG main
+    GIT_TAG <tag>  # e.g., v0.1.0
 )
 FetchContent_MakeAvailable(snenv)
 
