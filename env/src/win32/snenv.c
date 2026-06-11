@@ -2,9 +2,11 @@
 
 #if defined(SN_OS_WINDOWS)
 
-    #include <sncore/utf.h>
-    #include <tlhelp32.h>
+// clang-format off
     #include <windows.h>
+    #include <tlhelp32.h>
+    #include <sncore/utf.h>
+// clang-format on
 
 uint64_t sn_env_var_get(const char *name, char *value, uint64_t size) {
     wchar_t wname[1024];
