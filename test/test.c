@@ -127,7 +127,7 @@ static void test_large_env_value(void) {
 
     char large[LARGE_VAR_SIZE];
 
-    for (int i = 0; i < LARGE_VAR_SIZE - 1; i++) large[i] = 'A' + (i % 26);
+    for (int i = 0; i < LARGE_VAR_SIZE - 1; i++) large[i] = (char)('A' + (i % 26));  // 'A'..'Z'
 
     large[LARGE_VAR_SIZE - 1] = 0;
 
