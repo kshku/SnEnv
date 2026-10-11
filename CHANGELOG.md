@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2026-10-11
+
+### Removed
+- `sn_env_get_process_id` and `sn_env_get_process_parent_id`. Querying the
+  current and parent process id now lives in SnProcess as
+  `sn_process_get_current_id` and `sn_process_get_parent_id`
+
 ## [0.2.3] - 2026-10-02
 
 ### Changed
