@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15...3.31)
 
-project(SnEnv VERSION 0.2.3 DESCRIPTION "Env related things in Sn* projects" LANGUAGES C)
+project(SnEnv VERSION 0.3.0 DESCRIPTION "Env related things in Sn* projects" LANGUAGES C)
 
 include(FetchContent)
 FetchContent_Declare(sncore

@@ -143,17 +143,6 @@ static void test_large_env_value(void) {
     free(value);
 }
 
-static void test_process_ids(void) {
-    printf("test_process_ids...\n");
-
-    uint64_t pid = sn_env_get_process_id();
-    uint64_t ppid = sn_env_get_process_parent_id();
-
-    printf("pid=%llu ppid=%llu\n", (unsigned long long)pid, (unsigned long long)ppid);
-
-    TEST_ASSERT(pid > 0);
-}
-
 static void test_exe_path(void) {
     printf("test_exe_path...\n");
 
@@ -201,8 +190,6 @@ int main(void) {
     test_env_iteration_reset();
 
     test_large_env_value();
-
-    test_process_ids();
 
     test_exe_path();
 

@@ -61,20 +61,6 @@ SN_ENV_API bool sn_env_var_unset(const char *name);
 SN_ENV_API bool sn_env_var_read(SnEnvVarEntry *entry);
 
 /**
- * @brief Get the process id.
- *
- * @return Returns process id.
- */
-SN_ENV_API uint64_t sn_env_get_process_id(void);
-
-/**
- * @brief Get the parent process id.
- *
- * @return Returns process id.
- */
-SN_ENV_API uint64_t sn_env_get_process_parent_id(void);
-
-/**
  * @brief Get absolute executable path.
  *
  * @param path Buffer to store path

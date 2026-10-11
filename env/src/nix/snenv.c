@@ -82,14 +82,6 @@ bool sn_env_var_read(SnEnvVarEntry *entry) {
     return true;
 }
 
-uint64_t sn_env_get_process_id(void) {
-    return (uint64_t)getpid();
-}
-
-uint64_t sn_env_get_process_parent_id(void) {
-    return (uint64_t)getppid();
-}
-
 uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
     char buffer[PATH_MAX] = {0};
 

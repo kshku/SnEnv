@@ -24,8 +24,6 @@ typedef struct SnEnvVarEntry {
 | `bool sn_env_var_set(const char *name, const char *value, bool overwrite)` | Set env var. `overwrite` controls whether existing values are replaced. |
 | `bool sn_env_var_unset(const char *name)` | Unset/remove an env var. |
 | `bool sn_env_var_read(SnEnvVarEntry *entry)` | Iterate all env vars. Returns false when done; next call restarts. |
-| `uint64_t sn_env_get_process_id(void)` | Get current process ID. |
-| `uint64_t sn_env_get_process_parent_id(void)` | Get parent process ID. |
 | `uint64_t sn_env_get_exe_path(char *path, uint64_t size)` | Get executable path. Pass NULL/0 to query required size. |
 | `uint64_t sn_env_get_cwd(char *cwd, uint64_t size)` | Get current working directory. Pass NULL/0 to query required size. |
 
@@ -45,9 +43,6 @@ int main(void) {
     sn_env_var_get("MY_VAR", val, size);
     printf("MY_VAR = %s\n", val);
     free(val);
-
-    // Process info
-    printf("PID = %llu\n", (unsigned long long)sn_env_get_process_id());
 
     // Current working directory
     size = sn_env_get_cwd(NULL, 0);

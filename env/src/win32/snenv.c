@@ -4,7 +4,6 @@
 
 // clang-format off
     #include <windows.h>
-    #include <tlhelp32.h>
     #include <sncore/utf.h>
 // clang-format on
 
@@ -94,32 +93,6 @@ bool sn_env_var_read(SnEnvVarEntry *entry) {
     ++var;
 
     return true;
-}
-
-uint64_t sn_env_get_process_id(void) {
-    return (uint64_t)GetCurrentProcessId();
-}
-
-uint64_t sn_env_get_process_parent_id(void) {
-    DWORD current_pid = GetCurrentProcessId();
-    PROCESSENTRY32 pe = {0};
-
-    HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    SN_ASSERT(h != INVALID_HANDLE_VALUE);
-
-    pe.dwSize = sizeof(PROCESSENTRY32);
-
-    if (Process32First(h, &pe)) {
-        do {
-            if (pe.th32ProcessID == current_pid) {
-                CloseHandle(h);
-                return (uint64_t)pe.th32ParentProcessID;
-            }
-        } while (Process32Next(h, &pe));
-    }
-
-    SN_SHOULD_NOT_REACH_HERE;
-    return 0;
 }
 
 uint64_t sn_env_get_exe_path(char *path, uint64_t size) {
